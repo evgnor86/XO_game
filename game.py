@@ -1,40 +1,40 @@
 # --- XO game for practical work on SkillFactory FPW-2.0 course
 # --- Evgeniy Ivanov, flow FPW-42, Okt'2021
 
-BOARDS = {
-    'main': {7: '_', 8: '_', 9: '_', 4: '_', 5: '_', 6: '_', 1: '_', 2: '_', 3: '_'},  # - Game board for print
-    'X': {7: '_', 8: '_', 9: '_', 4: '_', 5: '_', 6: '_', 1: '_', 2: '_', 3: '_'},     # - Mask board for X-sign
-    'O': {7: '_', 8: '_', 9: '_', 4: '_', 5: '_', 6: '_', 1: '_', 2: '_', 3: '_'}      # - Mask board for O-sign
+BOARD = {7: '_', 8: '_', 9: '_', 4: '_', 5: '_', 6: '_', 1: '_', 2: '_', 3: '_'}  # - Game board for print
+
+PLAYERS = {
+    'X': [],  # - Cells for X-sign
+    'O': []   # - Cells for O-sign
 }
 
-WIN_RULES = [
-    [7, 8, 9],  # - top horizontal line
-    [4, 5, 6],  # - middle  horizontal line
-    [1, 2, 3],  # - bottom horizontal line
-    [1, 4, 7],  # - left vertical line
-    [2, 5, 8],  # - middle vertical line
-    [3, 6, 9],  # - right vertical line
-    [3, 5, 7],  # - \ line
-    [1, 5, 9]   # - / line
-]
+WIN_RULES = (
+    (7, 8, 9),  # - top horizontal line
+    (4, 5, 6),  # - middle  horizontal line
+    (1, 2, 3),  # - bottom horizontal line
+    (1, 4, 7),  # - left vertical line
+    (2, 5, 8),  # - middle vertical line
+    (3, 6, 9),  # - right vertical line
+    (3, 5, 7),  # - \ line
+    (1, 5, 9)   # - / line
+)
 
 
 def print_board():
-    board = BOARDS['main']
-    print(f'{board[7]} {board[8]} {board[9]}')
-    print(f'{board[4]} {board[5]} {board[6]}')
-    print(f'{board[1]} {board[2]} {board[3]}')
+    print(f'{BOARD[7]} {BOARD[8]} {BOARD[9]}')
+    print(f'{BOARD[4]} {BOARD[5]} {BOARD[6]}')
+    print(f'{BOARD[1]} {BOARD[2]} {BOARD[3]}')
 
 
 def win_check(sign):
-    board_mask = sorted([cell for cell in BOARDS[sign] if BOARDS[sign][cell] == '*'])
-    winner = bool([True for rule in WIN_RULES if len(set(board_mask).intersection(set(rule))) == 3])
+    board_mask = set(PLAYERS[sign])
+    winner = bool([True for rule in WIN_RULES if len(board_mask.intersection(rule)) == 3])
     return winner
 
 
 def set_cell(cell, sign):
-    BOARDS['main'][cell] = sign
-    BOARDS[sign][cell] = '*'
+    BOARD[cell] = sign
+    PLAYERS[sign].append(cell)
 
 
 def start():
@@ -54,7 +54,7 @@ def start():
         # - if in range [1-9] proceed game process
         elif cell in list(map(str, range(1, 10))):
             # - If cell is not busy then set current sign to it
-            if BOARDS['main'][int(cell)] == '_':
+            if BOARD[int(cell)] == '_':
                 set_cell(int(cell), sign)
             else:
                 print(f'\nCell is busy... repeat input')
